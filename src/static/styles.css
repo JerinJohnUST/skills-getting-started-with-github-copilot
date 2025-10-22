@@ -142,3 +142,70 @@ footer {
   padding: 20px;
   color: #666;
 }
+
+.participants-section {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px dashed #eee;
+}
+
+.participants-section h5 {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  color: #333;
+  font-weight: 600;
+}
+
+.participants-list {
+  list-style: none; /* hide bullets */
+  padding-left: 0;
+  margin: 0;
+  max-height: 120px; /* keep cards compact */
+  overflow-y: auto;
+}
+
+.participant-item {
+  padding: 6px 8px;
+  margin-bottom: 6px;
+  background: linear-gradient(90deg, #ffffff, #fbfbfb);
+  border-radius: 4px;
+  border: 1px solid #f0f0f0;
+  font-size: 14px;
+  color: #444;
+}
+
+.participant-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.participant-email {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-right: 8px;
+}
+
+.participant-delete {
+  background: transparent;
+  border: none;
+  color: #c62828;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.participant-delete:hover {
+  background: rgba(198,40,40,0.08);
+}
+
+/* make the "No participants yet" info look subtle */
+.participants-section .info {
+  margin: 0;
+  font-size: 13px;
+  color: #666;
+  padding: 6px 0;
+}
