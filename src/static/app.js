@@ -27,8 +27,9 @@ document.addEventListener("DOMContentLoaded", () => {
         // Build participants HTML (bulleted list) or a friendly empty message
         let participantsHTML = "";
         if (participants.length) {
+          // Render participants without bullets and include a delete button for each
           participantsHTML = `<div class="participants-section"><h5>Participants</h5><ul class="participants-list">${participants
-            .map((p) => `<li class="participant-item">${escapeHtml(p)}</li>`)
+            .map((p) => `<li class="participant-item" data-email="${escapeHtml(p)}"><span class="participant-email">${escapeHtml(p)}</span><button class="participant-delete" title="Remove">×</button></li>`)
             .join("")}</ul></div>`;
         } else {
           participantsHTML = `<div class="participants-section"><h5>Participants</h5><p class="info">No participants yet</p></div>`;
@@ -43,6 +44,37 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
 
         activitiesList.appendChild(activityCard);
+
+          // Attach delete handlers for participant delete buttons
+          const deleteButtons = activityCard.querySelectorAll('.participant-delete');
+          deleteButtons.forEach((btn) => {
+            btn.addEventListener('click', async (ev) => {
+              ev.preventDefault();
+              ev.stopPropagation();
+              const li = btn.closest('.participant-item');
+              const email = li && li.dataset && li.dataset.email;
+              if (!email) return;
+
+              if (!confirm(`Unregister ${email} from ${name}?`)) return;
+
+              try {
+                const res = await fetch(`/activities/${encodeURIComponent(name)}/participants?email=${encodeURIComponent(email)}`, {
+                  method: 'DELETE'
+                });
+
+                if (res.ok) {
+                  // Refresh the activities so the UI (participants + availability) updates
+                  fetchActivities();
+                } else {
+                  const data = await res.json().catch(() => ({}));
+                  alert(data.detail || 'Failed to unregister participant');
+                }
+              } catch (err) {
+                console.error('Error unregistering participant:', err);
+                alert('Network error while trying to unregister participant');
+              }
+            });
+          });
 
         // Add option to select dropdown
         const option = document.createElement("option");
@@ -87,6 +119,8 @@ document.addEventListener("DOMContentLoaded", () => {
         messageDiv.textContent = result.message;
         messageDiv.className = "success";
         signupForm.reset();
+        // Refresh activities so the new participant shows up immediately
+        fetchActivities();
       } else {
         messageDiv.textContent = result.detail || "An error occurred";
         messageDiv.className = "error";
